@@ -1,6 +1,6 @@
 
 import React, { useState } from "react";
-import { LayoutGrid, LayoutList, ChevronDown, Star, Info, Tag } from "lucide-react";
+import { LayoutGrid, LayoutList, ChevronDown, Star, Info, Tag, ThumbsUp, ThumbsDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Progress } from "@/components/ui/progress";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { AreaChart, Area, XAxis, YAxis, ResponsiveContainer } from "recharts";
 
 interface ResultsDisplayProps {
@@ -32,7 +33,9 @@ const generateSampleProducts = (query: string) => [
       { date: "Apr", price: 259.99 },
       { date: "May", price: 249.99 }
     ],
-    reasoning: "These headphones offer the best combination of sound quality, battery life, and noise cancellation in your budget range."
+    relevanceScore: 95,
+    reasoning: "These headphones offer the best combination of sound quality, battery life, and noise cancellation in your budget range.",
+    aiNotes: ["Matches your preference for premium audio brands", "Within your typical audio equipment budget range", "Has features you've searched for previously"]
   },
   {
     id: 2,
@@ -50,7 +53,9 @@ const generateSampleProducts = (query: string) => [
       { date: "Apr", price: 189.99 },
       { date: "May", price: 179.99 }
     ],
-    reasoning: "If portability is your priority, these earbuds offer excellent sound quality in a compact form factor at a lower price point."
+    relevanceScore: 88,
+    reasoning: "If portability is your priority, these earbuds offer excellent sound quality in a compact form factor at a lower price point.",
+    aiNotes: ["Aligns with your preference for portable audio devices", "Good value based on your price sensitivity profile", "Similar to products you've viewed recently"]
   },
   {
     id: 3,
@@ -68,7 +73,9 @@ const generateSampleProducts = (query: string) => [
       { date: "Apr", price: 329.99 },
       { date: "May", price: 329.99 }
     ],
-    reasoning: "For audiophiles who prioritize sound quality, these headphones deliver studio-grade audio with excellent noise isolation."
+    relevanceScore: 92,
+    reasoning: "For audiophiles who prioritize sound quality, these headphones deliver studio-grade audio with excellent noise isolation.",
+    aiNotes: ["Matches your preference for high-end audio equipment", "Features align with your past purchases", "Currently at its lowest price point this year"]
   },
   {
     id: 4,
@@ -86,7 +93,9 @@ const generateSampleProducts = (query: string) => [
       { date: "Apr", price: 94.99 },
       { date: "May", price: 89.99 }
     ],
-    reasoning: "These earphones offer excellent value with decent sound quality and all essential features at an entry-level price point."
+    relevanceScore: 78,
+    reasoning: "These earphones offer excellent value with decent sound quality and all essential features at an entry-level price point.",
+    aiNotes: ["Good option if you're looking to save on budget", "Basic functionality meets the requirements in your search", "Popular entry-level choice with good reviews"]
   }
 ];
 
@@ -137,6 +146,11 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ query }) => {
     }
   };
 
+  const handleFeedback = (productId: number, isPositive: boolean) => {
+    console.log(`User gave ${isPositive ? 'positive' : 'negative'} feedback for product ${productId}`);
+    // In a real app, this would send feedback to your backend
+  };
+
   return (
     <div>
       <div className="flex justify-between items-center mb-4">
@@ -162,7 +176,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ query }) => {
       
       <div className={displayMode === "grid" ? "grid grid-cols-1 md:grid-cols-2 gap-4" : "space-y-4"}>
         {products.map((product) => (
-          <Card key={product.id} className="overflow-hidden">
+          <Card key={product.id} className="overflow-hidden border-t-4 border-t-primary/40 hover:shadow-md transition-shadow">
             <div className={displayMode === "grid" ? "" : "flex"}>
               <div className={displayMode === "grid" ? "relative" : "relative w-1/3"}>
                 <img 
@@ -199,14 +213,14 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ query }) => {
                   
                   <div className="mt-4">
                     <div className="flex items-center justify-between mb-1">
-                      <span className="text-sm font-medium">Budget Impact</span>
-                      <span className="text-xs text-muted-foreground">65%</span>
+                      <span className="text-sm font-medium">Relevance to Your Search</span>
+                      <span className="text-xs text-muted-foreground">{product.relevanceScore}%</span>
                     </div>
-                    <Progress value={65} className="h-2" />
+                    <Progress value={product.relevanceScore} className="h-2" />
                   </div>
                 </CardContent>
                 
-                <CardFooter className="flex-col items-start pt-0">
+                <CardFooter className="flex-col items-start pt-0 pb-3">
                   <Collapsible
                     open={expandedProduct === product.id}
                     onOpenChange={() => toggleProductExpansion(product.id)}
@@ -223,6 +237,20 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ query }) => {
                     </CollapsibleTrigger>
                     <CollapsibleContent className="pt-2">
                       <p className="text-sm text-muted-foreground">{product.reasoning}</p>
+                      
+                      <div className="mt-3 bg-accent/30 p-3 rounded-md">
+                        <h4 className="text-sm font-medium mb-2 flex items-center">
+                          <Info className="h-4 w-4 mr-1" />
+                          AI-Generated Insights
+                        </h4>
+                        <ul className="space-y-1">
+                          {product.aiNotes.map((note, i) => (
+                            <li key={i} className="text-xs text-muted-foreground flex items-start">
+                              <span className="mr-1.5 text-primary">•</span> {note}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
                       
                       <div className="mt-3">
                         <h4 className="text-sm font-medium mb-2">Price History</h4>
@@ -263,6 +291,43 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ query }) => {
                               />
                             </AreaChart>
                           </ChartContainer>
+                        </div>
+                      </div>
+                      
+                      <div className="flex justify-between mt-4 pt-2 border-t border-dashed border-muted">
+                        <span className="text-xs text-muted-foreground">Was this recommendation helpful?</span>
+                        <div className="flex gap-2">
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Button 
+                                variant="ghost" 
+                                size="sm" 
+                                className="h-8 w-8 p-0"
+                                onClick={() => handleFeedback(product.id, true)}
+                              >
+                                <ThumbsUp className="h-4 w-4 text-green-500" />
+                              </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p>This recommendation is helpful</p>
+                            </TooltipContent>
+                          </Tooltip>
+                          
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Button 
+                                variant="ghost" 
+                                size="sm" 
+                                className="h-8 w-8 p-0"
+                                onClick={() => handleFeedback(product.id, false)}
+                              >
+                                <ThumbsDown className="h-4 w-4 text-red-500" />
+                              </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p>This recommendation is not helpful</p>
+                            </TooltipContent>
+                          </Tooltip>
                         </div>
                       </div>
                     </CollapsibleContent>
