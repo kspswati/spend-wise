@@ -29,23 +29,25 @@ const Dashboard: React.FC = () => {
           </Tabs>
         </header>
         
-        <div className="grid gap-6">
-          <TabsContent value="search" className="mt-0">
-            <SearchInterface />
-          </TabsContent>
-          
-          <TabsContent value="results" className="mt-0">
-            <ResultsDisplay />
-          </TabsContent>
-          
-          <TabsContent value="preferences" className="mt-0">
-            <UserPreferences />
-          </TabsContent>
-          
-          <TabsContent value="history" className="mt-0">
-            <ConversationHistory />
-          </TabsContent>
-        </div>
+        <Tabs value={activeTab} onValueChange={setActiveTab}>
+          <div className="grid gap-6">
+            <TabsContent value="search" className="mt-0">
+              <SearchInterface />
+            </TabsContent>
+            
+            <TabsContent value="results" className="mt-0">
+              <ResultsDisplay />
+            </TabsContent>
+            
+            <TabsContent value="preferences" className="mt-0">
+              <UserPreferences />
+            </TabsContent>
+            
+            <TabsContent value="history" className="mt-0">
+              <ConversationHistory />
+            </TabsContent>
+          </div>
+        </Tabs>
         
         <Separator className="my-6" />
         
