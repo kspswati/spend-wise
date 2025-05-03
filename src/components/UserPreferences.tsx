@@ -69,8 +69,8 @@ const UserPreferences: React.FC = () => {
   };
 
   return (
-    <div>
-      <div className="flex justify-between items-center mb-4">
+    <div className="p-1">
+      <div className="flex justify-between items-center mb-5">
         <div>
           <h2 className="text-2xl font-bold">AI-Inferred Preferences</h2>
           <p className="text-sm text-muted-foreground">These preferences are automatically detected based on your shopping behavior</p>
@@ -79,84 +79,93 @@ const UserPreferences: React.FC = () => {
           onClick={refreshInferences} 
           variant="outline" 
           disabled={isRefreshing}
-          className="flex gap-2 items-center"
+          className="flex gap-2 items-center rounded-full h-10 px-5"
         >
           <RefreshCw className={`h-4 w-4 ${isRefreshing ? "animate-spin" : ""}`} />
           Refresh
         </Button>
       </div>
       
-      <div className="grid gap-6 md:grid-cols-2">
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex justify-between items-center">
-              <span>Price Sensitivity</span>
-              <Badge variant="outline" className="ml-2">AI Detected</Badge>
-            </CardTitle>
-            <CardDescription>Based on your previous purchases</CardDescription>
+      <div className="grid gap-5 md:grid-cols-2">
+        <Card className="border border-muted">
+          <CardHeader className="pb-3">
+            <div className="flex justify-between items-center">
+              <div>
+                <CardTitle className="text-xl">Price Sensitivity</CardTitle>
+                <CardDescription className="text-sm mt-1">Based on your previous purchases</CardDescription>
+              </div>
+              <Badge variant="outline" className="ml-2 bg-background/50">AI Detected</Badge>
+            </div>
           </CardHeader>
           <CardContent>
-            <div className="space-y-4">
+            <div className="space-y-5">
               <div>
-                <div className="flex justify-between mb-2">
-                  <Label>How price-sensitive are you?</Label>
-                  <span className="text-sm font-medium">{priceSensitivity}%</span>
-                </div>
-                <Slider 
-                  value={[priceSensitivity]} 
-                  onValueChange={([value]) => setPriceSensitivity(value)} 
-                  max={100} 
-                  step={1}
-                />
-                <div className="flex justify-between mt-1">
-                  <span className="text-xs text-muted-foreground">Save Every Penny</span>
-                  <span className="text-xs text-muted-foreground">Quality Over Price</span>
+                <Label className="text-base font-medium mb-4 block">How price-sensitive are you?</Label>
+                <div className="mb-6">
+                  <div className="flex justify-between mb-2">
+                    <span className="text-base font-medium">{priceSensitivity}%</span>
+                  </div>
+                  <Slider 
+                    value={[priceSensitivity]} 
+                    onValueChange={([value]) => setPriceSensitivity(value)} 
+                    max={100} 
+                    step={1}
+                    className="mb-2"
+                  />
+                  <div className="flex justify-between mt-1">
+                    <span className="text-sm text-muted-foreground">Save Every Penny</span>
+                    <span className="text-sm text-muted-foreground">Quality Over Price</span>
+                  </div>
                 </div>
               </div>
             </div>
           </CardContent>
         </Card>
         
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex justify-between items-center">
-              <span>Shopping Priorities</span>
-              <Badge variant="outline" className="ml-2">AI Detected</Badge>
-            </CardTitle>
-            <CardDescription>Based on your shopping patterns</CardDescription>
+        <Card className="border border-muted">
+          <CardHeader className="pb-3">
+            <div className="flex justify-between items-center">
+              <div>
+                <CardTitle className="text-xl">Shopping Priorities</CardTitle>
+                <CardDescription className="text-sm mt-1">Based on your shopping patterns</CardDescription>
+              </div>
+              <Badge variant="outline" className="ml-2 bg-background/50">AI Detected</Badge>
+            </div>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
               <div>
                 <div className="flex justify-between mb-2">
-                  <Label>Quality</Label>
-                  <span className="text-sm font-medium">{shoppingPriorities.quality}%</span>
+                  <Label className="text-base">Quality</Label>
+                  <span className="text-base font-medium">{shoppingPriorities.quality}%</span>
                 </div>
                 <Slider 
                   value={[shoppingPriorities.quality]} 
                   onValueChange={([value]) => handlePriorityChange("quality", value)} 
                   max={100} 
                   step={1}
+                  className="mb-4"
                 />
               </div>
               
               <div>
                 <div className="flex justify-between mb-2">
-                  <Label>Price</Label>
-                  <span className="text-sm font-medium">{shoppingPriorities.price}%</span>
+                  <Label className="text-base">Price</Label>
+                  <span className="text-base font-medium">{shoppingPriorities.price}%</span>
                 </div>
                 <Slider 
                   value={[shoppingPriorities.price]} 
                   onValueChange={([value]) => handlePriorityChange("price", value)} 
                   max={100} 
                   step={1}
+                  className="mb-4"
                 />
               </div>
               
               <div>
                 <div className="flex justify-between mb-2">
-                  <Label>Convenience</Label>
-                  <span className="text-sm font-medium">{shoppingPriorities.convenience}%</span>
+                  <Label className="text-base">Convenience</Label>
+                  <span className="text-base font-medium">{shoppingPriorities.convenience}%</span>
                 </div>
                 <Slider 
                   value={[shoppingPriorities.convenience]} 
@@ -169,19 +178,21 @@ const UserPreferences: React.FC = () => {
           </CardContent>
         </Card>
         
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex justify-between items-center">
-              <span>Brand Preferences</span>
-              <Badge variant="outline" className="ml-2">AI Detected</Badge>
-            </CardTitle>
-            <CardDescription>Based on your browsing and purchase history</CardDescription>
+        <Card className="border border-muted">
+          <CardHeader className="pb-3">
+            <div className="flex justify-between items-center">
+              <div>
+                <CardTitle className="text-xl">Brand Preferences</CardTitle>
+                <CardDescription className="text-sm mt-1">Based on your browsing and purchase history</CardDescription>
+              </div>
+              <Badge variant="outline" className="ml-2 bg-background/50">AI Detected</Badge>
+            </div>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-2 gap-4">
               {Object.entries(brandPreferences).map(([brand, preferred]) => (
                 <div key={brand} className="flex items-center justify-between space-x-2">
-                  <Label htmlFor={`brand-${brand}`} className="flex-1 cursor-pointer">
+                  <Label htmlFor={`brand-${brand}`} className="flex-1 cursor-pointer text-base">
                     {brand}
                   </Label>
                   <Switch
@@ -195,21 +206,23 @@ const UserPreferences: React.FC = () => {
           </CardContent>
         </Card>
         
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex justify-between items-center">
-              <span>Budget Categories</span>
-              <Badge variant="outline" className="ml-2">AI Detected</Badge>
-            </CardTitle>
-            <CardDescription>Based on your spending patterns</CardDescription>
+        <Card className="border border-muted">
+          <CardHeader className="pb-3">
+            <div className="flex justify-between items-center">
+              <div>
+                <CardTitle className="text-xl">Budget Categories</CardTitle>
+                <CardDescription className="text-sm mt-1">Based on your spending patterns</CardDescription>
+              </div>
+              <Badge variant="outline" className="ml-2 bg-background/50">AI Detected</Badge>
+            </div>
           </CardHeader>
           <CardContent>
-            <div className="space-y-4">
+            <div className="space-y-5">
               {budgetCategories.map((category, index) => (
                 <div key={index} className="space-y-2">
                   <div className="flex justify-between">
                     <div className="flex items-center gap-1">
-                      <Label>{category.name}</Label>
+                      <Label className="text-base">{category.name}</Label>
                       <Tooltip>
                         <TooltipTrigger asChild>
                           <Button variant="ghost" size="sm" className="h-5 w-5 p-0">
@@ -225,7 +238,7 @@ const UserPreferences: React.FC = () => {
                         </TooltipContent>
                       </Tooltip>
                     </div>
-                    <span className="text-sm font-medium">${category.allocation}</span>
+                    <span className="text-base font-medium">${category.allocation}</span>
                   </div>
                   <Slider 
                     value={[category.allocation]} 
@@ -233,13 +246,14 @@ const UserPreferences: React.FC = () => {
                     min={10}
                     max={1000} 
                     step={10}
+                    className="mb-2"
                   />
                   <Progress value={category.confidence} className="h-1" />
-                  <Separator className="my-2" />
+                  {index < budgetCategories.length - 1 && <Separator className="my-3" />}
                 </div>
               ))}
               
-              <p className="text-xs text-muted-foreground mt-4">
+              <p className="text-xs text-muted-foreground mt-3">
                 These budget categories were automatically determined based on your shopping history
               </p>
             </div>
