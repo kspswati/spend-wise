@@ -5,7 +5,7 @@
 
 @layer base {
   :root {
-    --background: 195 100% 98%;
+    --background: 180 50% 97%;
     --foreground: 222 47% 11%;
 
     --card: 0 0% 100%;
@@ -14,35 +14,35 @@
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
 
-    --primary: 196 83% 45%;
+    --primary: 180 70% 45%;
     --primary-foreground: 195 100% 98%;
 
-    --secondary: 210 40% 96.1%;
+    --secondary: 300 30% 96%;
     --secondary-foreground: 222.2 47.4% 11.2%;
 
     --muted: 210 40% 96.1%;
     --muted-foreground: 215.4 16.3% 46.9%;
 
-    --accent: 196 83% 90%;
-    --accent-foreground: 196 83% 25%;
+    --accent: 262 83% 93%;
+    --accent-foreground: 262 83% 25%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
 
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
-    --ring: 196 83% 45%;
+    --ring: 180 70% 45%;
 
-    --radius: 0.5rem;
+    --radius: 1rem;
 
-    --sidebar-background: 196 83% 98%;
-    --sidebar-foreground: 196 83% 20%;
-    --sidebar-primary: 196 83% 45%;
+    --sidebar-background: 180 70% 98%;
+    --sidebar-foreground: 180 70% 20%;
+    --sidebar-primary: 180 70% 45%;
     --sidebar-primary-foreground: 195 100% 98%;
-    --sidebar-accent: 196 83% 90%;
-    --sidebar-accent-foreground: 196 83% 25%;
-    --sidebar-border: 196 83% 90%;
-    --sidebar-ring: 196 83% 45%;
+    --sidebar-accent: 180 70% 90%;
+    --sidebar-accent-foreground: 180 70% 25%;
+    --sidebar-border: 180 70% 90%;
+    --sidebar-ring: 180 70% 45%;
   }
 
   .dark {
@@ -55,7 +55,7 @@
     --popover: 222.2 84% 4.9%;
     --popover-foreground: 210 40% 98%;
 
-    --primary: 196 83% 45%;
+    --primary: 180 70% 45%;
     --primary-foreground: 222.2 47.4% 11.2%;
 
     --secondary: 217.2 32.6% 17.5%;
@@ -72,16 +72,16 @@
 
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
-    --ring: 196 83% 45%;
+    --ring: 180 70% 45%;
     
     --sidebar-background: 222.2 84% 6.9%;
-    --sidebar-foreground: 196 83% 80%;
-    --sidebar-primary: 196 83% 45%;
+    --sidebar-foreground: 180 70% 80%;
+    --sidebar-primary: 180 70% 45%;
     --sidebar-primary-foreground: 195 100% 98%;
     --sidebar-accent: 222.2 84% 9.9%;
-    --sidebar-accent-foreground: 196 83% 80%;
+    --sidebar-accent-foreground: 180 70% 80%;
     --sidebar-border: 222.2 84% 15%;
-    --sidebar-ring: 196 83% 45%;
+    --sidebar-ring: 180 70% 45%;
   }
 }
 
@@ -98,22 +98,64 @@
 
 @layer components {
   .agent-card {
-    @apply rounded-lg border bg-card p-5 text-card-foreground shadow-sm transition-all;
+    @apply rounded-xl border bg-card p-5 text-card-foreground shadow-sm transition-all hover:shadow-md;
   }
 
   .agent-card-1 {
-    @apply border-agent1/30 bg-gradient-to-br from-white to-agent1/5;
+    @apply border-agent1/30 bg-gradient-to-br from-white to-agent1/5 hover:to-agent1/10;
   }
 
   .agent-card-2 {
-    @apply border-agent2/30 bg-gradient-to-br from-white to-agent2/5;
+    @apply border-agent2/30 bg-gradient-to-br from-white to-agent2/5 hover:to-agent2/10;
   }
   
   .agent-card-3 {
-    @apply border-agent3/30 bg-gradient-to-br from-white to-agent3/5;
+    @apply border-agent3/30 bg-gradient-to-br from-white to-agent3/5 hover:to-agent3/10;
   }
   
   .agent-card-4 {
-    @apply border-agent4/30 bg-gradient-to-br from-white to-agent4/5;
+    @apply border-agent4/30 bg-gradient-to-br from-white to-agent4/5 hover:to-agent4/10;
   }
+
+  .glass-card {
+    @apply rounded-xl border border-white/20 bg-white/40 backdrop-blur-sm shadow-sm transition-all hover:shadow-md;
+  }
+
+  .search-input-focused {
+    @apply ring-2 ring-primary/50 shadow-lg;
+  }
+}
+
+/* Animation classes */
+@keyframes floatUp {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.float-up-animation {
+  animation: floatUp 0.3s ease-out forwards;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.shimmer-effect {
+  background: linear-gradient(90deg, 
+    rgba(255,255,255,0) 0%, 
+    rgba(255,255,255,0.6) 50%, 
+    rgba(255,255,255,0) 100%);
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
 }
