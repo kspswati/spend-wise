@@ -11,7 +11,7 @@ const Dashboard: React.FC = () => {
     <ShoppingProvider>
       <div className="container py-6 max-w-7xl">
         <header className="mb-8">
-          <h1 className="text-3xl font-bold">Savvy Shopper Squad</h1>
+          <h1 className="text-3xl font-bold">SpendWise</h1>
           <p className="text-muted-foreground">Your intelligent shopping assistant</p>
         </header>
         
