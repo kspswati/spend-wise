@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Check, RefreshCw, ThumbsUp, ThumbsDown, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -69,7 +68,7 @@ const UserPreferences: React.FC = () => {
   };
 
   return (
-    <div className="p-1">
+    <div className="p-3 w-full max-w-[950px]">
       <div className="flex justify-between items-center mb-5">
         <div>
           <h2 className="text-2xl font-bold">AI-Inferred Preferences</h2>
@@ -86,7 +85,7 @@ const UserPreferences: React.FC = () => {
         </Button>
       </div>
       
-      <div className="grid gap-5 md:grid-cols-2">
+      <div className="grid gap-6 md:grid-cols-2">
         <Card className="border border-muted">
           <CardHeader className="pb-3">
             <div className="flex justify-between items-center">
@@ -97,7 +96,7 @@ const UserPreferences: React.FC = () => {
               <Badge variant="outline" className="ml-2 bg-background/50">AI Detected</Badge>
             </div>
           </CardHeader>
-          <CardContent>
+          <CardContent className="px-6">
             <div className="space-y-5">
               <div>
                 <Label className="text-base font-medium mb-4 block">How price-sensitive are you?</Label>
@@ -132,7 +131,7 @@ const UserPreferences: React.FC = () => {
               <Badge variant="outline" className="ml-2 bg-background/50">AI Detected</Badge>
             </div>
           </CardHeader>
-          <CardContent>
+          <CardContent className="px-6">
             <div className="space-y-4">
               <div>
                 <div className="flex justify-between mb-2">
@@ -188,7 +187,7 @@ const UserPreferences: React.FC = () => {
               <Badge variant="outline" className="ml-2 bg-background/50">AI Detected</Badge>
             </div>
           </CardHeader>
-          <CardContent>
+          <CardContent className="px-6">
             <div className="grid grid-cols-2 gap-4">
               {Object.entries(brandPreferences).map(([brand, preferred]) => (
                 <div key={brand} className="flex items-center justify-between space-x-2">
@@ -216,7 +215,7 @@ const UserPreferences: React.FC = () => {
               <Badge variant="outline" className="ml-2 bg-background/50">AI Detected</Badge>
             </div>
           </CardHeader>
-          <CardContent>
+          <CardContent className="px-6">
             <div className="space-y-5">
               {budgetCategories.map((category, index) => (
                 <div key={index} className="space-y-2">
