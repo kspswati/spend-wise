@@ -1,0 +1,213 @@
+
+import React, { useState } from "react";
+import { LayoutGrid, LayoutList, ChevronDown, Star, Plus, Minus, Info } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { Progress } from "@/components/ui/progress";
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
+import { AreaChart, Area, XAxis, YAxis, ResponsiveContainer } from "recharts";
+
+// Sample data - in a real app, this would come from your backend
+const sampleProducts = [
+  {
+    id: 1,
+    name: "Premium Wireless Headphones",
+    image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
+    price: 249.99,
+    rating: 4.7,
+    specs: ["Noise Cancellation", "40h Battery", "Bluetooth 5.0"],
+    priceHistory: [
+      { date: "Jan", price: 299.99 },
+      { date: "Feb", price: 279.99 },
+      { date: "Mar", price: 279.99 },
+      { date: "Apr", price: 259.99 },
+      { date: "May", price: 249.99 }
+    ],
+    reasoning: "These headphones offer the best combination of sound quality, battery life, and noise cancellation in your budget range."
+  },
+  {
+    id: 2,
+    name: "Ultra-Light Wireless Earbuds",
+    image: "https://images.unsplash.com/photo-1572569511254-d8f925fe2cbb?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
+    price: 179.99,
+    rating: 4.5,
+    specs: ["Water Resistant", "24h Battery", "Touch Controls"],
+    priceHistory: [
+      { date: "Jan", price: 199.99 },
+      { date: "Feb", price: 189.99 },
+      { date: "Mar", price: 189.99 },
+      { date: "Apr", price: 189.99 },
+      { date: "May", price: 179.99 }
+    ],
+    reasoning: "If portability is your priority, these earbuds offer excellent sound quality in a compact form factor at a lower price point."
+  }
+];
+
+const ResultsDisplay: React.FC = () => {
+  const [displayMode, setDisplayMode] = useState<"grid" | "list">("grid");
+  const [expandedProduct, setExpandedProduct] = useState<number | null>(null);
+  
+  const toggleProductExpansion = (productId: number) => {
+    if (expandedProduct === productId) {
+      setExpandedProduct(null);
+    } else {
+      setExpandedProduct(productId);
+    }
+  };
+  
+  const renderRatingStars = (rating: number) => {
+    const stars = [];
+    const fullStars = Math.floor(rating);
+    const hasHalfStar = rating - fullStars >= 0.5;
+    
+    for (let i = 0; i < fullStars; i++) {
+      stars.push(<Star key={`full-${i}`} className="fill-yellow-400 text-yellow-400 h-4 w-4" />);
+    }
+    
+    if (hasHalfStar) {
+      stars.push(<Star key="half" className="text-yellow-400 h-4 w-4" />);
+    }
+    
+    const emptyStars = 5 - stars.length;
+    for (let i = 0; i < emptyStars; i++) {
+      stars.push(<Star key={`empty-${i}`} className="text-gray-300 h-4 w-4" />);
+    }
+    
+    return <div className="flex">{stars}</div>;
+  };
+
+  return (
+    <div>
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-2xl font-bold">Recommended Products</h2>
+        
+        <div className="flex items-center gap-2">
+          <Tabs defaultValue="grid" value={displayMode} onValueChange={(v) => setDisplayMode(v as "grid" | "list")}>
+            <TabsList>
+              <TabsTrigger value="grid">
+                <LayoutGrid className="h-4 w-4 mr-1" />
+                Grid
+              </TabsTrigger>
+              <TabsTrigger value="list">
+                <LayoutList className="h-4 w-4 mr-1" />
+                List
+              </TabsTrigger>
+            </TabsList>
+          </Tabs>
+        </div>
+      </div>
+      
+      <div className={displayMode === "grid" ? "grid grid-cols-1 md:grid-cols-2 gap-4" : "space-y-4"}>
+        {sampleProducts.map((product) => (
+          <Card key={product.id} className="overflow-hidden">
+            <div className={displayMode === "grid" ? "" : "flex"}>
+              <div className={displayMode === "grid" ? "" : "w-1/3"}>
+                <img 
+                  src={product.image} 
+                  alt={product.name}
+                  className={`w-full h-48 object-cover ${displayMode === "list" ? "h-full" : ""}`}
+                />
+              </div>
+              
+              <div className={displayMode === "grid" ? "" : "w-2/3"}>
+                <CardHeader>
+                  <div className="flex justify-between">
+                    <CardTitle>{product.name}</CardTitle>
+                    <div className="text-lg font-bold text-primary">${product.price}</div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    {renderRatingStars(product.rating)}
+                    <span className="text-sm text-muted-foreground">{product.rating}/5</span>
+                  </div>
+                </CardHeader>
+                
+                <CardContent>
+                  <div className="flex flex-wrap gap-2 mb-3">
+                    {product.specs.map((spec, i) => (
+                      <span key={i} className="text-xs bg-secondary px-2 py-1 rounded">{spec}</span>
+                    ))}
+                  </div>
+                  
+                  <div className="mt-4">
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="text-sm font-medium">Budget Impact</span>
+                      <span className="text-xs text-muted-foreground">65%</span>
+                    </div>
+                    <Progress value={65} className="h-2" />
+                  </div>
+                </CardContent>
+                
+                <CardFooter className="flex-col items-start pt-0">
+                  <Collapsible
+                    open={expandedProduct === product.id}
+                    onOpenChange={() => toggleProductExpansion(product.id)}
+                    className="w-full"
+                  >
+                    <CollapsibleTrigger asChild>
+                      <Button variant="ghost" size="sm" className="p-0 h-auto w-full flex justify-between">
+                        <div className="flex items-center">
+                          <Info className="h-4 w-4 mr-2" />
+                          <span>Why This Recommendation</span>
+                        </div>
+                        <ChevronDown className="h-4 w-4" />
+                      </Button>
+                    </CollapsibleTrigger>
+                    <CollapsibleContent className="pt-2">
+                      <p className="text-sm text-muted-foreground">{product.reasoning}</p>
+                      
+                      <div className="mt-3">
+                        <h4 className="text-sm font-medium mb-2">Price History</h4>
+                        <div className="h-32">
+                          <ChartContainer
+                            config={{
+                              price: { color: "hsl(var(--primary))" }
+                            }}
+                          >
+                            <AreaChart
+                              data={product.priceHistory}
+                              margin={{
+                                top: 5,
+                                right: 5,
+                                left: 0,
+                                bottom: 5,
+                              }}
+                            >
+                              <defs>
+                                <linearGradient id="colorPrice" x1="0" y1="0" x2="0" y2="1">
+                                  <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.3} />
+                                  <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0} />
+                                </linearGradient>
+                              </defs>
+                              <XAxis dataKey="date" />
+                              <YAxis domain={['auto', 'auto']} />
+                              <ChartTooltip
+                                content={
+                                  <ChartTooltipContent indicator="dot" />
+                                }
+                              />
+                              <Area
+                                type="monotone"
+                                dataKey="price"
+                                stroke="hsl(var(--primary))"
+                                fillOpacity={1}
+                                fill="url(#colorPrice)"
+                              />
+                            </AreaChart>
+                          </ChartContainer>
+                        </div>
+                      </div>
+                    </CollapsibleContent>
+                  </Collapsible>
+                </CardFooter>
+              </div>
+            </div>
+          </Card>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+export default ResultsDisplay;
