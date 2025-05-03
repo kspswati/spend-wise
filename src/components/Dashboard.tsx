@@ -5,11 +5,12 @@ import SearchInterface from "@/components/SearchInterface";
 import ResultsDisplay from "@/components/ResultsDisplay";
 import UserPreferences from "@/components/UserPreferences";
 import ConversationHistory from "@/components/ConversationHistory";
+import UserAuth from "@/components/UserAuth";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
-import { PanelRight, History, Search, Sparkles } from "lucide-react";
+import { PanelLeft, History, Search, Sparkles } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { fadeInAnimation, hoverElevateAnimation } from "@/lib/animation-utils";
 
@@ -37,17 +38,7 @@ const Dashboard: React.FC = () => {
       <div className="min-h-screen bg-gradient-to-br from-background to-secondary/30">
         <div className="container py-8 max-w-7xl">
           <header className="mb-8 flex items-center justify-between">
-            <div>
-              <div className="flex items-center gap-2">
-                <Sparkles className="h-6 w-6 text-primary" />
-                <h1 className="text-3xl font-bold bg-gradient-to-r from-primary to-accent-foreground bg-clip-text text-transparent">
-                  SpendWise
-                </h1>
-              </div>
-              <p className="text-muted-foreground">Your intelligent shopping assistant</p>
-            </div>
-            
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-3">
               <Sheet>
                 <SheetTrigger asChild>
                   <Button 
@@ -55,10 +46,10 @@ const Dashboard: React.FC = () => {
                     size="icon"
                     className={`${hoverElevateAnimation} rounded-xl bg-white backdrop-blur-sm border-accent/30`}
                   >
-                    <PanelRight className="h-4 w-4" />
+                    <PanelLeft className="h-4 w-4" />
                   </Button>
                 </SheetTrigger>
-                <SheetContent className="w-[350px] sm:w-[450px] border-l-accent/20 bg-sidebar">
+                <SheetContent side="left" className="w-[350px] sm:w-[450px] border-r-accent/20 bg-sidebar">
                   <Tabs defaultValue="preferences" value={sidebarTab} onValueChange={setSidebarTab}>
                     <TabsList className="grid w-full grid-cols-2 rounded-xl bg-sidebar-accent/50">
                       <TabsTrigger value="preferences" className="rounded-lg data-[state=active]:bg-white">
@@ -77,6 +68,20 @@ const Dashboard: React.FC = () => {
                   </Tabs>
                 </SheetContent>
               </Sheet>
+              
+              <div>
+                <div className="flex items-center gap-2">
+                  <Sparkles className="h-6 w-6 text-primary" />
+                  <h1 className="text-3xl font-bold bg-gradient-to-r from-primary to-accent-foreground bg-clip-text text-transparent">
+                    SpendWise
+                  </h1>
+                </div>
+                <p className="text-muted-foreground">Your intelligent shopping assistant</p>
+              </div>
+            </div>
+            
+            <div className="flex items-center">
+              <UserAuth />
             </div>
           </header>
           
