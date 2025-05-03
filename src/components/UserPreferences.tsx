@@ -1,25 +1,29 @@
 
 import React, { useState } from "react";
-import { Check, Plus, Save } from "lucide-react";
+import { Check, RefreshCw, ThumbsUp, ThumbsDown, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
-import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { Progress } from "@/components/ui/progress";
 
 const UserPreferences: React.FC = () => {
-  // State for user preferences
+  // State for inferred user preferences (in real implementation, these would come from AI backend)
   const [priceSensitivity, setPriceSensitivity] = useState(70);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  
+  // Sample inferred preferences
   const [shoppingPriorities, setShoppingPriorities] = useState({
     quality: 60,
     price: 80,
     convenience: 40
   });
   
-  // Sample brand preferences
+  // Sample brand preferences inferred from user behavior
   const [brandPreferences, setBrandPreferences] = useState({
     "Apple": true,
     "Samsung": true,
@@ -29,16 +33,12 @@ const UserPreferences: React.FC = () => {
     "Adidas": false
   });
   
-  // Budget categories
+  // Budget categories inferred from spending habits
   const [budgetCategories, setBudgetCategories] = useState([
-    { name: "Electronics", allocation: 500 },
-    { name: "Clothing", allocation: 200 },
-    { name: "Home", allocation: 300 }
+    { name: "Electronics", allocation: 500, confidence: 85 },
+    { name: "Clothing", allocation: 200, confidence: 92 },
+    { name: "Home", allocation: 300, confidence: 78 }
   ]);
-  
-  // New category input
-  const [newCategory, setNewCategory] = useState("");
-  const [newAllocation, setNewAllocation] = useState(100);
   
   const handleBrandToggle = (brand: string) => {
     setBrandPreferences({
@@ -60,41 +60,40 @@ const UserPreferences: React.FC = () => {
     setBudgetCategories(updated);
   };
   
-  const addBudgetCategory = () => {
-    if (newCategory.trim() !== "") {
-      setBudgetCategories([
-        ...budgetCategories,
-        { name: newCategory, allocation: newAllocation }
-      ]);
-      setNewCategory("");
-      setNewAllocation(100);
-    }
-  };
-  
-  const savePreferences = () => {
-    console.log("Saving preferences:", {
-      priceSensitivity,
-      shoppingPriorities,
-      brandPreferences,
-      budgetCategories
-    });
-    // Here you would implement saving to backend
+  const refreshInferences = () => {
+    setIsRefreshing(true);
+    // In a real implementation, this would call the AI backend to refresh inferences
+    setTimeout(() => {
+      setIsRefreshing(false);
+    }, 1500);
   };
 
   return (
     <div>
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-2xl font-bold">Your Shopping Preferences</h2>
-        <Button onClick={savePreferences}>
-          <Save className="mr-2 h-4 w-4" />
-          Save Preferences
+        <div>
+          <h2 className="text-2xl font-bold">AI-Inferred Preferences</h2>
+          <p className="text-sm text-muted-foreground">These preferences are automatically detected based on your shopping behavior</p>
+        </div>
+        <Button 
+          onClick={refreshInferences} 
+          variant="outline" 
+          disabled={isRefreshing}
+          className="flex gap-2 items-center"
+        >
+          <RefreshCw className={`h-4 w-4 ${isRefreshing ? "animate-spin" : ""}`} />
+          Refresh
         </Button>
       </div>
       
       <div className="grid gap-6 md:grid-cols-2">
         <Card>
           <CardHeader>
-            <CardTitle>Price Sensitivity</CardTitle>
+            <CardTitle className="flex justify-between items-center">
+              <span>Price Sensitivity</span>
+              <Badge variant="outline" className="ml-2">AI Detected</Badge>
+            </CardTitle>
+            <CardDescription>Based on your previous purchases</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
@@ -120,7 +119,11 @@ const UserPreferences: React.FC = () => {
         
         <Card>
           <CardHeader>
-            <CardTitle>Shopping Priorities</CardTitle>
+            <CardTitle className="flex justify-between items-center">
+              <span>Shopping Priorities</span>
+              <Badge variant="outline" className="ml-2">AI Detected</Badge>
+            </CardTitle>
+            <CardDescription>Based on your shopping patterns</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
@@ -168,7 +171,11 @@ const UserPreferences: React.FC = () => {
         
         <Card>
           <CardHeader>
-            <CardTitle>Brand Preferences</CardTitle>
+            <CardTitle className="flex justify-between items-center">
+              <span>Brand Preferences</span>
+              <Badge variant="outline" className="ml-2">AI Detected</Badge>
+            </CardTitle>
+            <CardDescription>Based on your browsing and purchase history</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-2 gap-4">
@@ -190,14 +197,34 @@ const UserPreferences: React.FC = () => {
         
         <Card>
           <CardHeader>
-            <CardTitle>Budget Categories</CardTitle>
+            <CardTitle className="flex justify-between items-center">
+              <span>Budget Categories</span>
+              <Badge variant="outline" className="ml-2">AI Detected</Badge>
+            </CardTitle>
+            <CardDescription>Based on your spending patterns</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
               {budgetCategories.map((category, index) => (
                 <div key={index} className="space-y-2">
                   <div className="flex justify-between">
-                    <Label>{category.name}</Label>
+                    <div className="flex items-center gap-1">
+                      <Label>{category.name}</Label>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Button variant="ghost" size="sm" className="h-5 w-5 p-0">
+                            <Info className="h-3 w-3" />
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p className="w-[200px] text-xs">
+                            AI confidence: {category.confidence}%
+                            <br />
+                            Based on your past {category.name.toLowerCase()} purchases
+                          </p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </div>
                     <span className="text-sm font-medium">${category.allocation}</span>
                   </div>
                   <Slider 
@@ -207,32 +234,14 @@ const UserPreferences: React.FC = () => {
                     max={1000} 
                     step={10}
                   />
+                  <Progress value={category.confidence} className="h-1" />
                   <Separator className="my-2" />
                 </div>
               ))}
               
-              <div className="pt-2 flex gap-2">
-                <Input 
-                  placeholder="New Category" 
-                  value={newCategory}
-                  onChange={(e) => setNewCategory(e.target.value)}
-                  className="flex-1"
-                />
-                <Input 
-                  type="number" 
-                  placeholder="Budget" 
-                  value={newAllocation}
-                  onChange={(e) => setNewAllocation(Number(e.target.value))}
-                  className="w-24"
-                />
-                <Button 
-                  variant="outline" 
-                  size="icon"
-                  onClick={addBudgetCategory}
-                >
-                  <Plus className="h-4 w-4" />
-                </Button>
-              </div>
+              <p className="text-xs text-muted-foreground mt-4">
+                These budget categories were automatically determined based on your shopping history
+              </p>
             </div>
           </CardContent>
         </Card>

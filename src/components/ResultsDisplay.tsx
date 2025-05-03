@@ -1,16 +1,21 @@
 
 import React, { useState } from "react";
-import { LayoutGrid, LayoutList, ChevronDown, Star, Plus, Minus, Info } from "lucide-react";
+import { LayoutGrid, LayoutList, ChevronDown, Star, Info, Tag } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Badge } from "@/components/ui/badge";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Progress } from "@/components/ui/progress";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import { AreaChart, Area, XAxis, YAxis, ResponsiveContainer } from "recharts";
 
-// Sample data - in a real app, this would come from your backend
-const sampleProducts = [
+interface ResultsDisplayProps {
+  query: string;
+}
+
+// Sample data - in a real app, this would come from your backend based on the query
+const generateSampleProducts = (query: string) => [
   {
     id: 1,
     name: "Premium Wireless Headphones",
@@ -18,6 +23,8 @@ const sampleProducts = [
     price: 249.99,
     rating: 4.7,
     specs: ["Noise Cancellation", "40h Battery", "Bluetooth 5.0"],
+    tag: "Top Rated",
+    tagType: "success",
     priceHistory: [
       { date: "Jan", price: 299.99 },
       { date: "Feb", price: 279.99 },
@@ -34,6 +41,8 @@ const sampleProducts = [
     price: 179.99,
     rating: 4.5,
     specs: ["Water Resistant", "24h Battery", "Touch Controls"],
+    tag: "Best Price",
+    tagType: "primary",
     priceHistory: [
       { date: "Jan", price: 199.99 },
       { date: "Feb", price: 189.99 },
@@ -42,12 +51,49 @@ const sampleProducts = [
       { date: "May", price: 179.99 }
     ],
     reasoning: "If portability is your priority, these earbuds offer excellent sound quality in a compact form factor at a lower price point."
+  },
+  {
+    id: 3,
+    name: "Premium Noise-Cancelling Headset",
+    image: "https://images.unsplash.com/photo-1583394838336-acd977736f90?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
+    price: 329.99,
+    rating: 4.8,
+    specs: ["Active Noise Cancellation", "50h Battery", "Hi-Res Audio"],
+    tag: "Premium Pick",
+    tagType: "warning",
+    priceHistory: [
+      { date: "Jan", price: 349.99 },
+      { date: "Feb", price: 349.99 },
+      { date: "Mar", price: 339.99 },
+      { date: "Apr", price: 329.99 },
+      { date: "May", price: 329.99 }
+    ],
+    reasoning: "For audiophiles who prioritize sound quality, these headphones deliver studio-grade audio with excellent noise isolation."
+  },
+  {
+    id: 4,
+    name: "Budget Wireless Earphones",
+    image: "https://images.unsplash.com/photo-1546435770-a3e426bf472b?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
+    price: 89.99,
+    rating: 4.2,
+    specs: ["IPX4 Water Resistant", "18h Battery", "Built-in Mic"],
+    tag: "Budget Friendly",
+    tagType: "default",
+    priceHistory: [
+      { date: "Jan", price: 99.99 },
+      { date: "Feb", price: 99.99 },
+      { date: "Mar", price: 94.99 },
+      { date: "Apr", price: 94.99 },
+      { date: "May", price: 89.99 }
+    ],
+    reasoning: "These earphones offer excellent value with decent sound quality and all essential features at an entry-level price point."
   }
 ];
 
-const ResultsDisplay: React.FC = () => {
+const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ query }) => {
   const [displayMode, setDisplayMode] = useState<"grid" | "list">("grid");
   const [expandedProduct, setExpandedProduct] = useState<number | null>(null);
+  const products = generateSampleProducts(query);
   
   const toggleProductExpansion = (productId: number) => {
     if (expandedProduct === productId) {
@@ -78,10 +124,25 @@ const ResultsDisplay: React.FC = () => {
     return <div className="flex">{stars}</div>;
   };
 
+  const getTagStyles = (tagType: string) => {
+    switch (tagType) {
+      case "success":
+        return "bg-green-100 text-green-800";
+      case "primary":
+        return "bg-blue-100 text-blue-800";
+      case "warning":
+        return "bg-amber-100 text-amber-800";
+      default:
+        return "bg-gray-100 text-gray-800";
+    }
+  };
+
   return (
     <div>
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-2xl font-bold">Recommended Products</h2>
+        <div className="font-medium text-muted-foreground">
+          Found {products.length} products matching your criteria
+        </div>
         
         <div className="flex items-center gap-2">
           <Tabs defaultValue="grid" value={displayMode} onValueChange={(v) => setDisplayMode(v as "grid" | "list")}>
@@ -100,15 +161,21 @@ const ResultsDisplay: React.FC = () => {
       </div>
       
       <div className={displayMode === "grid" ? "grid grid-cols-1 md:grid-cols-2 gap-4" : "space-y-4"}>
-        {sampleProducts.map((product) => (
+        {products.map((product) => (
           <Card key={product.id} className="overflow-hidden">
             <div className={displayMode === "grid" ? "" : "flex"}>
-              <div className={displayMode === "grid" ? "" : "w-1/3"}>
+              <div className={displayMode === "grid" ? "relative" : "relative w-1/3"}>
                 <img 
                   src={product.image} 
                   alt={product.name}
-                  className={`w-full h-48 object-cover ${displayMode === "list" ? "h-full" : ""}`}
+                  className={`w-full object-cover ${displayMode === "grid" ? "h-48" : "h-full"}`}
                 />
+                {product.tag && (
+                  <div className={`absolute top-2 left-2 px-2 py-1 rounded text-xs font-medium flex items-center ${getTagStyles(product.tagType)}`}>
+                    <Tag className="h-3 w-3 mr-1" />
+                    {product.tag}
+                  </div>
+                )}
               </div>
               
               <div className={displayMode === "grid" ? "" : "w-2/3"}>
